@@ -1,0 +1,167 @@
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="rotationSystem.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+<style>
+    @font-face { font-family: Muro; src: url('Muroslant.otf'); } 
+    .queue{
+        text-align: center;
+        font-family: Muro;
+        font-size: 28px;
+        letter-spacing: 2px;
+    }
+    canvas{
+        vertical-align: top;
+    }
+</style>
+<head>
+    <title>SchoolTeto</title>
+</head>
+<body style="background-color:#222; color: #FFF;">
+    <div style="top: 50%; left: 50%; position: fixed; transform: translate(-50%, -50%); display:flex;">
+        <div class="queue">
+            HOLD
+            <hr>
+            <canvas id="h" width="90" height="60"></canvas>
+            <div id="notif" style="width: 90px; text-align: center;"></div>
+        </div>
+        <div>
+            <canvas id="b" width="200" height="400" style="padding: 18px;"></canvas>
+        </div>
+        <div class="queue">
+            NEXT
+            <hr>
+            <canvas id="n" width="90" height="360"></canvas>
+        </div>
+    </div>
+    <button target="popup" onclick="">Game Settings</button>
+</body>
+<script>
+
+const color = {
+    Z: "#F00",
+    L: "#F80",
+    O: "#FF0",
+    S: "#0F0",
+    I: "#0BF",
+    J: "#05F",
+    T: "#C3F"
+}
+var imgs = {
+    grid: './grid.png',
+}
+
+const a = {t:0,c:""} // t:0 = nothing   t:1 = heap mino   t:2 = current mino   t:3 = ghost mino
+const aRow = function() { return '.'.repeat(boardSize[0]).split('').map(()=>{return a}) }
+
+
+// setting up board context
+var ctx  = document.getElementById("b").getContext("2d")
+var ctxH = document.getElementById("h").getContext("2d")
+var ctxN = document.getElementById("n").getContext("2d")
+
+// drawing the board i think?
+var gridCvs = document.createElement('canvas'); 
+gridCvs.height = cellSize; 
+gridCvs.width = cellSize; 
+var gridCtx = gridCvs.getContext('2d'); 
+gridCtx.fillStyle = '#2A2A2A'; 
+gridCtx.fillRect(0,0,cellSize,cellSize); 
+gridCtx.strokeStyle = '#3A3A3A'; 
+gridCtx.strokeRect(0,0,cellSize,cellSize)
+
+var pattern = ctx.createPattern(gridCvs, 'repeat')
+for (let i = 0; i < boardSize[1]; i++) { board.push(aRow()) }
+document.getElementById("b").height = ((boardSize[1]-hiddenRows)*cellSize)
+document.getElementById("b").width  = boardSize[0]*cellSize
+
+var keys = Object.keys(imgs)
+keys.map((k,idx) => {
+    var i = new Image()
+    i.onload=()=>{
+        imgs[k] = i
+        if(idx+1==keys.length) setTimeout(() => {
+            callback()
+        }, 250) // Load images first, then load game after
+    }
+    i.src = imgs[k]
+})
+
+function callback() {
+    pieces = SRSX.pieces
+    kicks = SRSX.kicks
+
+    // document.addEventListener("keydown", function(e) {
+    //     if(e.repeat) return;
+        // switch(input) {
+        //     case 'RE': // Restart
+        //         board = []
+        //         for (let i = 0; i < boardSize[1]; i++) {board.push(aRow())}
+        //         queue = []
+        //         rot = 0
+        //         piece = ""
+        //         holdP = ""
+        //         held = false
+        //         xPOS = spawn[0]
+        //         yPOS = spawn[1]
+        //         xGHO = spawn[0]
+        //         yGHO = spawn[1]
+        //         newPiece()
+        //         break;
+        // }
+    // })
+
+    setInterval(() => {
+        move('SD')
+    }, 700)
+
+    // function playSnd(sfx,overlap) {
+    //     if(sfxCache[sfx] && !overlap) return sfxCache[sfx].play()
+    //     var s = new Audio(`sfx/${sfx}.wav`)
+    //     sfxCache[sfx] = s
+    //     s.play()
+    // }
+
+    // function softDrop(id) {
+    //     if(SDR) {
+    //         var loop = setInterval(function(a) {
+    //             if(sdID==id) {
+    //                 move('SD')
+    //             } else {clearInterval(loop)}
+    //         }, SDR)
+    //     } else { // SDR is 0ms = instant SD
+    //         var loop = setInterval(() => {
+    //             if(sdID==id) {
+    //                 yPOS=yGHO
+    //                 clearActive()
+    //                 setShape()
+    //             } else {clearInterval(loop)}
+    //         }, 0)
+            
+    //     }
+    // }
+
+    // function hardDrop() {
+    //     yPOS = yGHO
+    //     held = false
+    //     playSnd('HardDrop',true)
+    //     setShape(true)
+    //     clearActive()
+    //     checkLines()
+    //     newPiece()
+    // }
+
+    function newPiece() {
+        // xPOS = spawn[0]
+        // yPOS = spawn[1]
+        // rot = 0
+        // piece = queue.shift()
+        // updateQueue()
+        // updateGhost()
+        // setShape()
+    }
+
+    setInterval(() => {
+        render()
+    }, 0);
+}
+</script>
