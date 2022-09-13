@@ -1,19 +1,19 @@
 import Board from "../Board/Board"
 
 export default class Piece {
-    letter: String
+    letter: String = ''
     xPos = 0
     yPos = 0
     rot = 0
     board: Board
-    rotDir: {
-        cw: 1,
-        ccw: 3,
-        r180: 2
+    rotDir:  { [char: string]: number } = {
+        "cw": 1,
+        "ccw": 3,
+        "r180": 2
     }
-    orientation: Number[][][]
+    orientation: Number[][][] | null = null
 
-    kicks: {
+    kicks = {
         // Kicks
         "N0-1": [[ 0, 0], [-1, 0], [-1, 1], [ 0,-2], [-1,-2]],
         "N1-0": [[ 0, 0], [ 1, 0], [ 1,-1], [ 0, 2], [ 1, 2]],
@@ -56,16 +56,18 @@ export default class Piece {
         this.yPos = this.board.size[1]-this.board.hiddenRows-(this.board.size[1]-this.board.hiddenRows-this.board.hiddenRows)-1
     }
 
-    rotate(direction) {
+    rotate(direction: string) {
         var newRot = (this.rot + this.rotDir[direction])%4
 
         for(const kick of this.kicks[`${this.letter=='I'?'I':'N'}${this.rot}-${newRot}`]) {
-            if(this.canMoveTo(this.orientation[newRot], this.xPos+kick[0], this.yPos-kick[1])) { // Y is inverted lol
-                this.xPos+=kick[0]
-                this.yPos-=kick[1]
-                this.rot=newRot
-                // playSnd('Rotate',true)
-                break
+            if (this.orientation !== null) {
+                if(this.canMoveTo(this.orientation[newRot], this.xPos+kick[0], this.yPos-kick[1])) { // Y is inverted lol
+                    this.xPos+=kick[0]
+                    this.yPos-=kick[1]
+                    this.rot=newRot
+                    // playSnd('Rotate',true)
+                    break
+                }
             }
         }
 
@@ -74,12 +76,12 @@ export default class Piece {
         // setShape()
     }
 
-    canMoveTo(p, x, y) {
+    canMoveTo(p: Number[][], x: number, y: number) {
         var free = 0
         for (let row = 0; row < 4; row++) {
             for (let cell = 0; cell < 4; cell++) {
                 if(p[row][cell] == 1) {
-                    if(this.board[y+row] && this.board[y+row][x+cell] && this.board[y+row][x+cell].t != 1) {
+                    if(this.board.matrix[y+row] && this.board.matrix[y+row][x+cell] && this.board.matrix[y+row][x+cell].t != 1) {
                         free++
                     }
                 }
@@ -89,41 +91,46 @@ export default class Piece {
     }
 
     move(direction: String) {
-        switch(direction) {
-            case 'left':
-                if(this.canMoveTo(this.orientation[this.rot], this.xPos-1, this.yPos)) { 
-                    this.xPos--; 
-                    this.updateGhost();
-                    // playSnd('Move')
-                }
-                break;
-            case 'right':
-                if(this.canMoveTo(this.orientation[this.rot], this.xPos+1, this.yPos)) { 
-                    this.xPos++; 
-                    this.updateGhost();
-                    // playSnd('Move')
-                }
-                break;
-            case 'softdrop':
-                if(this.canMoveTo(this.orientation[this.rot], this.xPos, this.yPos+1)) { 
-                    this.yPos++
-                }
-                break;
+        if (this.orientation !== null) {
+            switch(direction) {
+                case 'left':
+                    if(this.canMoveTo(this.orientation[this.rot], this.xPos-1, this.yPos)) { 
+                        this.xPos--; 
+                        this.updateGhost();
+                        // playSnd('Move')
+                    }
+                    break;
+                case 'right':
+                    if(this.canMoveTo(this.orientation[this.rot], this.xPos+1, this.yPos)) { 
+                        this.xPos++; 
+                        this.updateGhost();
+                        // playSnd('Move')
+                    }
+                    break;
+                case 'softdrop':
+                    if(this.canMoveTo(this.orientation[this.rot], this.xPos, this.yPos+1)) { 
+                        this.yPos++
+                    }
+                    break;
+            }
         }
         // clearActive()
         // setShape()
     }
 
-    setShape(hd) {
+    setShape(hd: boolean | undefined) {
+        if (this.orientation !== null) {
         const orientation = this.orientation[this.rot]
         orientation.map((r,i) => {
-            r.map((c,ii) => {
+            r.map((color,ii) => {
                 // var rowG = this.board[i+yGHO]
                 // if(c==1 && rowG && rowG[ii+xGHO]) rowG[ii+xGHO] = {t:3,c:piece}
-                var rowP = this.board[i+this.yPos]
-                if(c==1 && rowP && rowP[ii+this.xPos]) rowP[ii+this.xPos] = {t:hd?1:2,c:this.letter}
+                let rowP = this.board.matrix[i+this.yPos]
+                if (color==1 && rowP && rowP[ii+this.xPos]) 
+                    rowP[ii+this.xPos] = {t:hd?1:2, color:this.letter as string}
             })
         })
+        }
     }
 
     updateGhost() { // updateGhost() must ALWAYS be before setShape()

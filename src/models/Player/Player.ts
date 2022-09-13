@@ -1,6 +1,6 @@
 
 export default class Player {
-    actions: {
+    actions = {
         w: 'hold',
         space: 'r180',
         d: 'cw',
@@ -12,7 +12,7 @@ export default class Player {
         r: 'reset',
     }
 
-    handlings: {
+    handlings = {
         arr: 0,
         das: 160
     }

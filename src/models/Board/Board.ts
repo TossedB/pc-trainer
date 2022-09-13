@@ -3,7 +3,7 @@ export default class Board {
     cellSize = 20 // size in pixels
     size = [10,40]
     hiddenRows = 20 // starts from the top
-    matrix: { c: string; t: number; }[][]
+    matrix: { color: string; t: number; }[][]
 
     constructor () {
     }

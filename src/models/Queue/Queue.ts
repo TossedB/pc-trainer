@@ -9,7 +9,7 @@ import PieceZ from "../Pieces/Piece-Z"
 import PieceO from "../Pieces/Piece-O"
 
 export default class Queue {
-    held: Piece
+    held: Piece | null = null
     current: Piece
     preview: Piece[] = []
     queued: Piece[] = []
@@ -18,13 +18,21 @@ export default class Queue {
     constructor (board: Board) {
         this.board = board
         this.fill()
-        for (let i = 0; i < 5; i++) {
-            this.next()
+        for (let i = this.preview.length; i < 5; i++) {
+            this.preview.push(this.queued.shift()!)
         }
+        this.current = new Piece(board) // Just to init current piece will be overwritten by next()
+        this.next()
     }
 
     hold () {
-        [this.held, this.current] = [this.current, this.held]
+        if (this.held !== null) {
+            [this.held, this.current] = [this.current, this.held]
+        }
+        else {
+            this.held = this.current
+            this.next()
+        }
         this.current.spawn()
         // playSnd('Hold')
         // clearActive()
@@ -38,7 +46,7 @@ export default class Queue {
         this.preview.push(this.queued.shift()!)
     }
 
-    shuffle(array) {
+    shuffle(array: Piece[]) {
         let currentIndex = array.length,  randomIndex;
       
         // While there remain elements to shuffle.
