@@ -14,8 +14,16 @@ export default class Queue {
     preview: Piece[] = []
     queued: Piece[] = []
     board: Board
+    canvas: {
+        hold: CanvasRenderingContext2D,
+        next: CanvasRenderingContext2D
+    }
 
-    constructor (board: Board) {
+    constructor (board: Board, contextHold: CanvasRenderingContext2D, contextNext: CanvasRenderingContext2D) {
+        this.canvas = {
+            hold: contextHold,
+            next: contextNext,
+        }
         this.board = board
         this.fill()
         for (let i = this.preview.length; i < 5; i++) {
@@ -85,5 +93,16 @@ export default class Queue {
         
         if (this.queued.length < 1)
             this.fill()
+    }
+
+    draw () {
+        this.canvas.next.clearRect(0,0,90,360)
+        this.canvas.hold.clearRect(0,0,90,60)
+        this.preview.forEach((piece, i) => {
+            this.canvas.next.drawImage(piece.sprite, 0, i*60)
+        })
+
+        if(this.held !== null) 
+            this.canvas.hold.drawImage(this.held.sprite,0,0)
     }
 }

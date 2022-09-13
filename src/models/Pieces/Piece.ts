@@ -1,7 +1,8 @@
 import Board from "../Board/Board"
 
 export default class Piece {
-    letter: String = ''
+    sprite: HTMLImageElement
+    letter: string = ''
     xPos = 0
     yPos = 0
     rot = 0
@@ -47,8 +48,10 @@ export default class Piece {
         "I3-1": [[ 0, 0], [ 0,-1], [ 0,-2], [ 0, 1], [ 0, 2], [ 1, 0]]
     }
 
-    constructor (board: Board) {
+    constructor (board: Board, sprite: string = '') {
         this.board = board
+        this.sprite = new Image()
+        this.sprite.src = sprite
     }
 
     spawn () {

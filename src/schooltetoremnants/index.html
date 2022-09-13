@@ -17,35 +17,11 @@
     <title>SchoolTeto</title>
 </head>
 <body style="background-color:#222; color: #FFF;">
-    <div style="top: 50%; left: 50%; position: fixed; transform: translate(-50%, -50%); display:flex;">
-        <div class="queue">
-            HOLD
-            <hr>
-            <canvas id="h" width="90" height="60"></canvas>
-            <div id="notif" style="width: 90px; text-align: center;"></div>
-        </div>
-        <div>
-            <canvas id="b" width="200" height="400" style="padding: 18px;"></canvas>
-        </div>
-        <div class="queue">
-            NEXT
-            <hr>
-            <canvas id="n" width="90" height="360"></canvas>
-        </div>
-    </div>
+
     <button target="popup" onclick="">Game Settings</button>
 </body>
 <script>
 
-const color = {
-    Z: "#F00",
-    L: "#F80",
-    O: "#FF0",
-    S: "#0F0",
-    I: "#0BF",
-    J: "#05F",
-    T: "#C3F"
-}
 var imgs = {
     grid: './grid.png',
 }
@@ -55,9 +31,9 @@ const aRow = function() { return '.'.repeat(boardSize[0]).split('').map(()=>{ret
 
 
 // setting up board context
-var ctx  = document.getElementById("b").getContext("2d")
-var ctxH = document.getElementById("h").getContext("2d")
-var ctxN = document.getElementById("n").getContext("2d")
+var ctxMatrix  = document.getElementById("b").getContext("2d")
+var ctxHold = document.getElementById("h").getContext("2d")
+var ctxNext = document.getElementById("n").getContext("2d")
 
 // drawing the board i think?
 var gridCvs = document.createElement('canvas'); 

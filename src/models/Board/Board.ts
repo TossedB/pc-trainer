@@ -4,6 +4,15 @@ export default class Board {
     size = [10,40]
     hiddenRows = 20 // starts from the top
     matrix: { color: string; t: number; }[][]
+    colors = {
+        Z: "#F00",
+        L: "#F80",
+        O: "#FF0",
+        S: "#0F0",
+        I: "#0BF",
+        J: "#05F",
+        T: "#C3F"
+    }
 
     constructor () {
     }

@@ -1,8 +1,8 @@
+import Board from "../Board/Board"
 import Piece from "./Piece";
 
 export default class PieceZ extends Piece {
     letter = 'z'
-    sprite = './pieceSprite/z.png'
     orientation = [
         [
             [0, 0, 0, 0],
@@ -29,4 +29,9 @@ export default class PieceZ extends Piece {
             [1, 0, 0, 0]
         ]
     ]
+
+    
+    constructor(board: Board, sprite = './pieceSprite/z.png') {
+        super(board, sprite)
+    }
 }
