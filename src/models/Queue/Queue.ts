@@ -12,7 +12,7 @@ export default class Queue {
     held: Piece | null = null
     current: Piece
     preview: Piece[] = []
-    queued: Piece[] = []
+    previews = 5
     board: Board
     canvas: {
         hold: CanvasRenderingContext2D,
@@ -26,9 +26,6 @@ export default class Queue {
         }
         this.board = board
         this.fill()
-        for (let i = this.preview.length; i < 5; i++) {
-            this.preview.push(this.queued.shift()!)
-        }
         this.current = new Piece(board) // Just to init current piece will be overwritten by next()
         this.next()
     }
@@ -51,7 +48,6 @@ export default class Queue {
 
     next() {
         this.current = this.preview.shift()!
-        this.preview.push(this.queued.shift()!)
     }
 
     shuffle(array: Piece[]) {
@@ -73,7 +69,7 @@ export default class Queue {
     }
 
     fill() {
-        this.queued = this.shuffle([
+        const bag = this.shuffle([
             new PieceI(this.board),
             new PieceJ(this.board),
             new PieceL(this.board),
@@ -82,6 +78,8 @@ export default class Queue {
             new PieceT(this.board),
             new PieceZ(this.board)
         ])
+
+        this.preview = this.preview.concat(bag);
     }
 
     update(action: string) {
@@ -91,7 +89,7 @@ export default class Queue {
         else if (action === 'next') 
             this.next()
         
-        if (this.queued.length < 1)
+        if (this.preview.length < 5)
             this.fill()
     }
 
@@ -107,9 +105,5 @@ export default class Queue {
 
         if(this.held !== null) 
             this.canvas.hold.drawImage(this.held.sprite,0,0)
-
-        console.log(this.current)
-        console.log(this.preview)
-        console.log(this.queued)
     }
 }
