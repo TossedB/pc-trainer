@@ -1,10 +1,13 @@
 import Board from "../Board/Board"
 
 export default class Piece {
-    sprite: HTMLImageElement
+    sprite: HTMLImageElement = new Image()
+    source: string = ''
     letter: string = ''
     xPos = 0
     yPos = 0
+    xGHO = 0
+    yGHO = 0
     rot = 0
     board: Board
     rotDir:  { [char: string]: number } = {
@@ -12,9 +15,9 @@ export default class Piece {
         "ccw": 3,
         "r180": 2
     }
-    orientation: Number[][][] | null = null
+    orientation: number[][][] | null = null
 
-    kicks = {
+    kicks : { [key: string]: number[][] }= {
         // Kicks
         "N0-1": [[ 0, 0], [-1, 0], [-1, 1], [ 0,-2], [-1,-2]],
         "N1-0": [[ 0, 0], [ 1, 0], [ 1,-1], [ 0, 2], [ 1, 2]],
@@ -50,19 +53,24 @@ export default class Piece {
 
     constructor (board: Board, sprite: string = '') {
         this.board = board
-        this.sprite = new Image()
-        this.sprite.src = sprite
+        this.source = sprite
+        this.sprite.src = this.source
     }
 
     spawn () {
         this.xPos = Math.round(this.board.size[0]/2)-2,
         this.yPos = this.board.size[1]-this.board.hiddenRows-(this.board.size[1]-this.board.hiddenRows-this.board.hiddenRows)-1
+        this.updateGhost()
+        this.setShape()
     }
 
     rotate(direction: string) {
-        var newRot = (this.rot + this.rotDir[direction])%4
+        const newRot = (this.rot + this.rotDir[direction])%4
 
-        for(const kick of this.kicks[`${this.letter=='I'?'I':'N'}${this.rot}-${newRot}`]) {
+        // Check if I piece rotation
+        const letter = this.letter.toLowerCase() === 'i' ?'I':'N'
+
+        for(const kick of this.kicks[letter + String(this.rot) + '-' + String(newRot)]) {
             if (this.orientation !== null) {
                 if(this.canMoveTo(this.orientation[newRot], this.xPos+kick[0], this.yPos-kick[1])) { // Y is inverted lol
                     this.xPos+=kick[0]
@@ -71,12 +79,11 @@ export default class Piece {
                     // playSnd('Rotate',true)
                     break
                 }
-            }
+            } 
         }
-
-        // clearActive()
-        // updateGhost()
-        // setShape()
+        this.board.clearActive()
+        this.updateGhost()
+        this.setShape()
     }
 
     canMoveTo(p: Number[][], x: number, y: number) {
@@ -117,31 +124,32 @@ export default class Piece {
                     break;
             }
         }
-        // clearActive()
-        // setShape()
+        this.board.clearActive()
+        this.setShape()
     }
 
-    setShape(hd: boolean | undefined) {
+    setShape(hd: boolean = false) {
         if (this.orientation !== null) {
-        const orientation = this.orientation[this.rot]
-        orientation.map((r,i) => {
-            r.map((color,ii) => {
-                // var rowG = this.board[i+yGHO]
-                // if(c==1 && rowG && rowG[ii+xGHO]) rowG[ii+xGHO] = {t:3,c:piece}
-                let rowP = this.board.matrix[i+this.yPos]
-                if (color==1 && rowP && rowP[ii+this.xPos]) 
-                    rowP[ii+this.xPos] = {t:hd?1:2, color:this.letter as string}
+            const orientation = this.orientation[this.rot]
+            orientation.map((r,i) => {
+                r.map((color,ii) => {
+                    let rowP = this.board.matrix[i+this.yPos]
+                    if (color==1 && rowP && rowP[ii+this.xPos]) {
+                        rowP[ii+this.xPos] = {t:hd?1:2, color:this.letter as string}
+                    }
+                })
             })
-        })
         }
     }
 
     updateGhost() { // updateGhost() must ALWAYS be before setShape()
-        // xGHO = xPos
-        // yGHO = yPos
-        // while (canMove(pieces[piece][rot],xGHO,yGHO+1)) {
-        //     yGHO++
-        // }
+        this.xGHO = this.xPos
+        this.yGHO = this.yPos
+        if (this.orientation != null) {
+            while (this.canMoveTo(this.orientation[this.rot], this.xGHO, this.yGHO+1)) {
+                this.yGHO++
+            }
+        }
     }
 
 }

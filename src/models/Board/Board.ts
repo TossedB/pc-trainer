@@ -1,65 +1,88 @@
-
 export default class Board {
+    // T denotes type of cell
+    cell: { color: string; t: number; } = {color:'', t:0} // t:0 = nothing   t:1 = heap mino   t:2 = current mino   t:3 = ghost mino
     cellSize = 20 // size in pixels
     size = [10,40]
     hiddenRows = 20 // starts from the top
-    matrix: { color: string; t: number; }[][]
+    matrix: { color: string; t: number; }[][] = []
     colors = {
-        Z: "#F00",
-        L: "#F80",
-        O: "#FF0",
-        S: "#0F0",
-        I: "#0BF",
-        J: "#05F",
-        T: "#C3F"
+        z: "#F00",
+        l: "#F80",
+        o: "#FF0",
+        s: "#0F0",
+        i: "#0BF",
+        j: "#05F",
+        t: "#C3F"
+    }
+    canvas: CanvasRenderingContext2D
+
+    constructor (context: CanvasRenderingContext2D,) {
+        for (let i = 0; i < this.size[1]; i++) { 
+            this.matrix.push(this.createRow()) 
+        }
+
+        this.canvas = context
     }
 
-    constructor () {
+    drawGrid () {
+        const canvas = document.createElement('canvas')
+        canvas.height = this.cellSize
+        canvas.width = this.cellSize
+
+        const context = canvas.getContext('2d')
+        if (context !== null) {
+            context.fillStyle = '#2A2A2A'
+            context.fillRect(0,0,this.cellSize,this.cellSize)
+            context.strokeStyle = '#3A3A3A'
+            context.strokeRect(0,0,this.cellSize,this.cellSize)
+            return context.createPattern(canvas, 'repeat')
+        }
     }
 
-    render() {
-        ctx.clearRect(0,0,this.size[0]*this.cellSize,this.size[1]*this.cellSize)
-        ctx.fillStyle = pattern
-        ctx.fillRect(0,0,this.size[0]*this.cellSize,this.size[1]*this.cellSize)
+    render () {
+        this.canvas.clearRect(0,0,this.size[0]*this.cellSize,this.size[1]*this.cellSize)
+        this.canvas.fillStyle = this.drawGrid() as CanvasPattern
+        this.canvas.fillRect(0,0,this.size[0]*this.cellSize,this.size[1]*this.cellSize)
         
         this.matrix.map((y,i) => {
             y.map((x,ii) => {
                 if(x.t!==0) {
-                    drawCell(ii+1,i-this.hiddenRows,x.c,x.t)
+                    this.drawCell(ii+1,i-this.hiddenRows,x.color,x.t)
                 }
             })
         })
     }
 
-    drawCell(x,y,piece,type) {
+    drawCell(x: number, y:number ,piece: string, type: number) {
         if(type==3) { // Ghost
-            ctx.strokeStyle = '#CCC'
-            ctx.strokeRect((x-1)*this.cellSize+1,y*this.cellSize+1,this.cellSize-2,this.cellSize-2)
+            this.canvas.strokeStyle = '#CCC'
+            this.canvas.strokeRect((x-1)*this.cellSize+1,y*this.cellSize+1,this.cellSize-2,this.cellSize-2)
         } else if(type!==0) { // Current and Heap
-            ctx.fillStyle = color[piece]
-            ctx.fillRect((x-1)*this.cellSize+1,y*this.cellSize+1,this.cellSize-2,this.cellSize-2)
+            this.canvas.fillStyle = this.colors[piece as keyof typeof this.colors]
+            this.canvas.fillRect((x-1)*this.cellSize+1,y*this.cellSize+1,this.cellSize-2,this.cellSize-2)
         }
     }
 
     clearActive() {
         this.matrix.map((r,i) => {
             r.map((c,ii) => {
-                if(c.t==2 || c.t==3 && this.matrix[i][ii]) {this.matrix[i][ii].t=0; this.matrix[i][ii].c=''}
+                if(c.t==2 || c.t==3 && this.matrix[i][ii]) {this.matrix[i][ii].t=0; this.matrix[i][ii].color=''}
             })
         })
     }
 
-    aRow () {
-        return '.'.repeat(this.size[0]).split('').map(()=>{return a})
+    createRow () {
+        return '.'.repeat(this.size[0]).split('').map(()=>{return this.cell})
     }
 
     checkLines() {
         this.matrix = this.matrix.filter(r => !r.map(c => {return c.t==1}).every(v=>v))
         var l = this.matrix.length
         var cleared = 0
+        // Counts the number of lines cleared and adds new rows to the top of the matrix
         for (let i = 0; i < this.size[1]-l; i++) {
             cleared++
-            this.matrix.unshift(this.aRow())
+            this.matrix.unshift(this.createRow())
         }
         switch (cleared) {
             case 1:

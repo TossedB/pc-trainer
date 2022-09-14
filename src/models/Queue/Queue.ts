@@ -95,14 +95,21 @@ export default class Queue {
             this.fill()
     }
 
-    draw () {
+    render () {
         this.canvas.next.clearRect(0,0,90,360)
         this.canvas.hold.clearRect(0,0,90,60)
-        this.preview.forEach((piece, i) => {
+
+        this.preview.forEach((piece, i) => { 
             this.canvas.next.drawImage(piece.sprite, 0, i*60)
         })
 
+        this.current.spawn()
+
         if(this.held !== null) 
             this.canvas.hold.drawImage(this.held.sprite,0,0)
+
+        console.log(this.current)
+        console.log(this.preview)
+        console.log(this.queued)
     }
 }

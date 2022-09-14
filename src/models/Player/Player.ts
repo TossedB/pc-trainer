@@ -23,7 +23,7 @@ export default class Player {
     listen() {
         window.addEventListener('keydown', e => {
            if (e.code in this.actions) {
-            const action = e.code
+            const action = this.actions[e.code as keyof typeof this.actions]
             switch(action) {
                 case 'hold':
                     console.log('queue.hold()')

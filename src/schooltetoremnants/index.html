@@ -36,31 +36,8 @@ var ctxHold = document.getElementById("h").getContext("2d")
 var ctxNext = document.getElementById("n").getContext("2d")
 
 // drawing the board i think?
-var gridCvs = document.createElement('canvas'); 
-gridCvs.height = cellSize; 
-gridCvs.width = cellSize; 
-var gridCtx = gridCvs.getContext('2d'); 
-gridCtx.fillStyle = '#2A2A2A'; 
-gridCtx.fillRect(0,0,cellSize,cellSize); 
-gridCtx.strokeStyle = '#3A3A3A'; 
-gridCtx.strokeRect(0,0,cellSize,cellSize)
 
-var pattern = ctx.createPattern(gridCvs, 'repeat')
-for (let i = 0; i < boardSize[1]; i++) { board.push(aRow()) }
-document.getElementById("b").height = ((boardSize[1]-hiddenRows)*cellSize)
-document.getElementById("b").width  = boardSize[0]*cellSize
 
-var keys = Object.keys(imgs)
-keys.map((k,idx) => {
-    var i = new Image()
-    i.onload=()=>{
-        imgs[k] = i
-        if(idx+1==keys.length) setTimeout(() => {
-            callback()
-        }, 250) // Load images first, then load game after
-    }
-    i.src = imgs[k]
-})
 
 function callback() {
     pieces = SRSX.pieces
@@ -72,11 +49,6 @@ function callback() {
         //     case 'RE': // Restart
         //         board = []
         //         for (let i = 0; i < boardSize[1]; i++) {board.push(aRow())}
-        //         queue = []
-        //         rot = 0
-        //         piece = ""
-        //         holdP = ""
-        //         held = false
         //         xPOS = spawn[0]
         //         yPOS = spawn[1]
         //         xGHO = spawn[0]

@@ -1,5 +1,6 @@
 import Board from "../Board/Board"
-import Piece from "./Piece";
+import Piece from "./Piece"
+const source = require('../../assets/sprites/i.png') as string
 
 export default class PieceI extends Piece {
     letter = 'i'
@@ -30,7 +31,7 @@ export default class PieceI extends Piece {
         ]
     ]
 
-    constructor(board: Board, sprite = './pieceSprite/i.png') {
-        super(board, sprite)
+    constructor(board: Board) {
+        super(board, source)
     }
 }
