@@ -61,7 +61,7 @@ export default {
 
       board = new Board(ctxBoard)
       queue = new Queue(board, ctxHold, ctxNext)
-      player = new Player()
+      player = new Player(queue)
 
       canvasBoard.height = ((board.size[1] - board.hiddenRows) * board.cellSize)
       canvasBoard.width = board.size[0] * board.cellSize

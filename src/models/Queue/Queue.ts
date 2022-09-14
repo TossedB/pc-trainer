@@ -39,6 +39,8 @@ export default class Queue {
             this.next()
         }
         this.current.spawn()
+        this.render()
+        this.board.render(true)
         // playSnd('Hold')
         // clearActive()
         // updateGhost()
