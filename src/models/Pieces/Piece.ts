@@ -58,6 +58,7 @@ export default class Piece {
     }
 
     spawn () {
+        this.rot = 0
         this.xPos = Math.round(this.board.size[0]/2)-2,
         this.yPos = this.board.size[1]-this.board.hiddenRows-(this.board.size[1]-this.board.hiddenRows-this.board.hiddenRows)-1
         this.updateGhost()
