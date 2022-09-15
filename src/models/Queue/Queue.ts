@@ -39,8 +39,12 @@ export default class Queue {
             this.held = this.current
             this.next()
         }
+
+        if (this.preview.length < 5) 
+            this.fill()
+
         this.render()
-        this.board.render(true)
+        this.board.render({hold: true})
         // playSnd('Hold')
         // clearActive()
         // updateGhost()
@@ -51,6 +55,10 @@ export default class Queue {
     next() {
         this.current = this.preview.shift()!
         this.current.spawn()
+
+        if (this.preview.length < 5) 
+            this.fill()
+
         this.board.render()
         this.render()
     }
@@ -85,17 +93,6 @@ export default class Queue {
         ])
 
         this.preview = this.preview.concat(bag);
-    }
-
-    update(action: string) {
-        if (action === 'hold')
-            this.hold()
-
-        else if (action === 'next') 
-            this.next()
-        
-        if (this.preview.length < 5)
-            this.fill()
     }
 
     render () {
