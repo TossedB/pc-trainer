@@ -34,7 +34,9 @@ export default class Queue {
     hold () {
         if (this.held !== null) {
             [this.held, this.current] = [this.current, this.held]
+            this.current.spawn()
         }
+
         else {
             this.held = this.current
             this.next()
