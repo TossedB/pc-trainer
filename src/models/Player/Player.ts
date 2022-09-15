@@ -15,12 +15,24 @@ export default class Player {
 
     handlings = {
         arr: 0,
-        das: 160
+        das: 110,
+        sdf: 0
+    }
+
+    state = {
+        dasCharge: false
     }
 
     queue: Queue
 
-    sid: number | null = null
+    // Soft drop interval ID
+    sID: number | null = null
+
+    // DAS charge interval ID
+    dID: number | null = null
+
+    // ARR interval ID
+    aID: number | null = null
 
     constructor (queue: Queue) {
         this.queue = queue
@@ -45,9 +57,9 @@ export default class Player {
                     this.queue.current.rotate(action)
                     break
                 case 'softdrop':
-                    this.sid = setInterval(()=>{
+                    this.sID = setInterval(()=>{
                         this.queue.current.move('softdrop')
-                    }, 700)
+                    }, this.handlings.sdf)
                     break
                 case 'harddrop':
                     this.queue.current.hardDrop()
@@ -55,14 +67,11 @@ export default class Player {
                     break
                 case 'left':
                 case 'right':
-                    // for (let i = 0; i < (ARR==0?boardSize[0]:1); i++) {
-                    //     var looooop = setInterval(function() {
-                    //         if(dasID==id) {
-                    //             move(dir)
-                    //         } else {clearInterval(looooop)};
-                    //     }, ARR)
-                    // }
-                    setTimeout(() => {
+                    this. dID = setTimeout(() => {
+                        this.state.dasCharge = true
+                        this.aID = setInterval(() => {
+                            this.queue.current.move(action)
+                        }, this.handlings.arr)
                     }, this.handlings.das)
                     break
                 default:
@@ -77,15 +86,21 @@ export default class Player {
             const action = this.actions[e.code.toLowerCase() as keyof typeof this.actions]
             switch(action) {
                 case 'softdrop':
-                    if (this.sid !== null)
-                        clearInterval(this.sid)
+                    if (this.sID !== null)
+                        clearInterval(this.sID)
                 break
                 case 'left':
                 case 'right':
-                    setTimeout(() => {
-                        console.log('piece.charged = true')
-                        console.log('piece.move(action)')
-                    }, this.handlings.das)
+                    if (this.aID !== null) 
+                        clearInterval(this.aID)
+
+                    if (this.dID !== null)
+                        clearTimeout(this.dID)
+                    
+                    if (!this.state.dasCharge)
+                        this.queue.current.move(action)
+
+                    this.state.dasCharge = false
                 break
                 default:
                     break
