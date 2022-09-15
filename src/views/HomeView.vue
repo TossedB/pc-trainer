@@ -42,7 +42,7 @@ export default {
 
     let board
     let queue
-    let player
+    let player = null
     let ctxNext
     let ctxHold
     let ctxBoard
@@ -55,6 +55,10 @@ export default {
     })
 
     const render = () => {
+      if (player !== null){
+        player.destroy()
+      }
+
       if (gravity != null) {
         clearInterval(gravity)
       }
@@ -69,9 +73,11 @@ export default {
       board.render()
       queue.render()
       player.listen()
+
       gravity = setInterval(() => {
         queue.current.move('softdrop')
         board.render()
+        queue.render()
       }, 4000)
     }
 

@@ -84,6 +84,7 @@ export default class Piece {
         this.board.clearActive()
         this.updateGhost()
         this.setShape()
+        this.board.render()
     }
 
     canMoveTo(p: Number[][], x: number, y: number) {
@@ -125,7 +126,9 @@ export default class Piece {
             }
         }
         this.board.clearActive()
+        this.updateGhost()
         this.setShape()
+        this.board.render()
     }
 
     setShape(hd: boolean = false) {

@@ -28,6 +28,8 @@ export default class Queue {
         this.fill()
         this.current = new Piece(board) // Just to init current piece will be overwritten by next()
         this.next()
+        this.current.spawn()
+        this.render()
     }
 
     hold () {
@@ -38,7 +40,6 @@ export default class Queue {
             this.held = this.current
             this.next()
         }
-        this.current.spawn()
         this.render()
         this.board.render(true)
         // playSnd('Hold')
@@ -50,6 +51,7 @@ export default class Queue {
 
     next() {
         this.current = this.preview.shift()!
+        this.current.spawn()
     }
 
     shuffle(array: Piece[]) {
@@ -102,8 +104,6 @@ export default class Queue {
         this.preview.forEach((piece, i) => { 
             this.canvas.next.drawImage(piece.sprite, 0, i*60)
         })
-
-        this.current.spawn()
 
         if(this.held !== null) 
             this.canvas.hold.drawImage(this.held.sprite,0,0)
