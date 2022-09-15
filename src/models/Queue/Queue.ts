@@ -29,7 +29,6 @@ export default class Queue {
         this.current = new Piece(board) // Just to init current piece will be overwritten by next()
         this.next()
         this.current.spawn()
-        this.render()
     }
 
     hold () {
@@ -52,6 +51,8 @@ export default class Queue {
     next() {
         this.current = this.preview.shift()!
         this.current.spawn()
+        this.board.render()
+        this.render()
     }
 
     shuffle(array: Piece[]) {

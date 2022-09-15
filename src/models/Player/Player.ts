@@ -49,6 +49,10 @@ export default class Player {
                         this.queue.current.move('softdrop')
                     }, 700)
                     break
+                case 'harddrop':
+                    this.queue.current.hardDrop()
+                    this.queue.next()
+                    break
                 case 'left':
                 case 'right':
                     // for (let i = 0; i < (ARR==0?boardSize[0]:1); i++) {
@@ -88,7 +92,6 @@ export default class Player {
             }
         }
     }
-
     
     destroy = () => {
         window.removeEventListener('keydown', this.keydown)

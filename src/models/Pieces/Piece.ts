@@ -131,6 +131,14 @@ export default class Piece {
         this.board.render()
     }
 
+    hardDrop () {
+        this.yPos = this.yGHO
+        // playSnd('HardDrop',true)
+        this.setShape(true)
+        this.board.clearActive()
+        this.board.checkLines()
+    }
+
     setShape(hd: boolean = false) {
         if (this.orientation !== null) {
             const orientation = this.orientation[this.rot]
