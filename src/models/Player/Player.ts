@@ -10,7 +10,6 @@ export default class Player {
         'numpad4': 'left',
         'numpad6': 'right',
         'numpad5': 'harddrop',
-        'keyr': 'reset',
     }
 
     handlings = {
