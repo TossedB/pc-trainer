@@ -39,10 +39,7 @@ export default class Board {
         }
     }
 
-    render (action: {hold: boolean} = {hold: false}) {
-        if (action.hold) 
-            this.clearActive()
-
+    render () {
         this.canvas.clearRect(0,0,this.size[0]*this.cellSize,this.size[1]*this.cellSize)
         this.canvas.fillStyle = this.drawGrid() as CanvasPattern
         this.canvas.fillRect(0,0,this.size[0]*this.cellSize,this.size[1]*this.cellSize)
