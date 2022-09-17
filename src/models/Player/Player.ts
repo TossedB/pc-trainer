@@ -15,7 +15,7 @@ export default class Player {
     handlings = {
         arr: 0,
         das: 110,
-        sdf: 0
+        sdf: 100
     }
 
     state = {
