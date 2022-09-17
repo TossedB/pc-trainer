@@ -42,11 +42,7 @@ export default class Queue {
             this.next()
         }
 
-        if (this.preview.length < 5) 
-            this.fill()
-
         this.render()
-        this.board.render({hold: true})
         // playSnd('Hold')
         // clearActive()
         // updateGhost()
